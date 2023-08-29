@@ -1,0 +1,118 @@
+/* ChatApp.css */
+.chat-app {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chat-list {
+  width: 20%;
+  min-width: 250px;
+  border-right: 1px solid #ccc;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+}
+
+.chat-list h2 {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+}
+
+.chat-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chat-list li {
+  padding: 10px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chat-list li:hover {
+  background-color: #ddd;
+}
+
+/* Add more space between list items */
+.chat-list li + li {
+  margin-top: 5px;
+}
+
+/* Style selected item */
+.chat-list li.selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+
+
+
+
+
+
+.chat-details {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.right-panel {
+  width: 20%;
+  min-width: 250px;
+  border-left: 1px solid #ccc;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+  overflow-y: auto;
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 0px;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  /* margin-bottom: 10px; */
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.message-body {
+  font-size: 14px;
+  padding: 0px;
+  border-radius: 10px;
+  max-width: 100%;
+}
+
+.message-body.bot {
+  color: #060505;
+}
+
+.message-body.user {  
+  color: #fff;
+}
+
+
+.message.bot {
+  align-self: flex-start;
+  background-color: #eaecf4; /* Bot bubble color */
+}
+
+.message.user {
+  align-self: flex-end;
+  background-color: #4542c4; /* User bubble color */
+}
+/* Add more styling as needed */

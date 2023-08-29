@@ -1,0 +1,21 @@
+# API justfile
+
+PACKAGE := 'src.main'
+
+[private]
+default:
+  @just --list --unsorted
+
+run:
+  uvicorn {{ PACKAGE }}:app --reload --port 5000
+
+install: venv
+  pip install -e .
+
+install-dev: venv
+  pip install -e .[test]
+
+venv:
+  -pyenv virtualenv 3.11.3 rasa-admin-api
+  pyenv local rasa-admin-api
+  -pyenv activate rasa-admin-api
