@@ -37,3 +37,5 @@ class Chat(BaseModel):
     sender_id: str
     events: list[Event]
 
+class MessagePaload(BaseModel):
+    text: str

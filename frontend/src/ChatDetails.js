@@ -1,34 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import RasaAdminAPI from './network'
+import React from 'react'
 
 const ALLOWED_TYPES = ['user', 'bot']; // action, slot, user_featurization
 
 function formatTimestamp(timestamp) {
   const date = new Date(timestamp * 1000);
-  return date.toLocaleString(); // Customize the format as needed
+  return date.toLocaleString();
 }
 
-function ChatDetails({ selectedConversation }) {
+function ChatDetails({ chat }) {
 
-  const [ events, setEvents ] = useState([])
-  useEffect(() => {
-    if (selectedConversation) {
-      RasaAdminAPI.getChat(selectedConversation).then(data => {
-        // Filter events based on allowed types
-        const filteredEvents = data.events.filter(event => ALLOWED_TYPES.includes(event.type_name));
-        setEvents(filteredEvents);
-      });
-    }
-  }, [selectedConversation]);
+  const filter_events = (chat) => {
+    const filteredEvents = chat.events.filter(event => ALLOWED_TYPES.includes(event.type_name));
+    return filteredEvents.slice().reverse()
+  }
 
   return (
     <div className="chat-details">
       <h2>Chat</h2>
-      {selectedConversation ? (
+      {chat ? (
         <div className="messages">
-          <h3>{selectedConversation}</h3>
-
-          {events.slice().reverse().map((event, index) => (
+          <h3>{chat.sender_id}</h3>
+          {filter_events(chat).map((event, index) => (
             <div key={index} className={`message ${event.type_name}`}>
               <p className="timestamp">{formatTimestamp(event.timestamp)}</p>
               <p className={`message-body ${event.type_name}`}>{event.data.text}</p>
@@ -36,7 +28,7 @@ function ChatDetails({ selectedConversation }) {
           ))}
         </div>
       ) : (
-        <p>Select a conversation from the left.</p>
+        <p>Select a conversation</p>
       )}
     </div>
   );

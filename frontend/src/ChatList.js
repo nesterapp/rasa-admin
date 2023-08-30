@@ -1,14 +1,6 @@
-import React, { useState, useEffect } from 'react'
-import RasaAdminAPI from './network';
+import React from 'react'
 
-function ChatList({ selectedConversation, onSelectConversation }) {
-
-  const [ chats, setChats ] = useState([])
-
-  useEffect(() => {
-    // Fetch chat collection
-    RasaAdminAPI.getChats().then(data => setChats(data))
-  }, [])
+function ChatList({ chats, selectedChat, onSelectChat }) {
 
   return (
     <div className="chat-list">
@@ -17,8 +9,8 @@ function ChatList({ selectedConversation, onSelectConversation }) {
         {chats.map((chat, index) => (
           <li
             key={index}
-            className={selectedConversation === chat.sender_id ? "selected" : ""}
-            onClick={() => onSelectConversation(chat.sender_id)}
+            className={selectedChat && chat.sender_id === selectedChat.sender_id ? "selected" : ""}
+            onClick={() => onSelectChat(chat)}
           >
             {chat.sender_id}
           </li>

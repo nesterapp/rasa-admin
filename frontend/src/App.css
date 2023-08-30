@@ -47,11 +47,23 @@
   color: #fff;
 }
 
+.middle-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* padding: 20px; */
+  /* box-sizing: border-box; */
+  overflow-y: auto;
+}
 
-
-
-
-
+/* .chat-details {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+  overflow-y: auto;
+} */
 
 .chat-details {
   flex: 1;
@@ -116,3 +128,26 @@
   background-color: #4542c4; /* User bubble color */
 }
 /* Add more styling as needed */
+
+
+/* Message Input box */
+.message-input {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.message-input input {
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+.message-input button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
