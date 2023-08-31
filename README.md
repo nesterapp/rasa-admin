@@ -1,8 +1,7 @@
 # Rasa Admin web-app ( humble Rasa-X replacement )
 
-A simple yet very useful Rasa backoffice web-app for tracking your Rasa bot
-conversations with users.  
-Currently supports Rasa running on PostgreSQL DB.
+A simple, yet useful Rasa backoffice web-app for tracking your Rasa bot
+conversations with users.. and more.  
 
 ![screenshot](https://raw.githubusercontent.com/nesterapp/rasa-admin/main/screenshot.png)
 
@@ -15,7 +14,29 @@ Currently supports Rasa running on PostgreSQL DB.
 - Frontend: React JS
 - API Backend: FastAPI, Pydantic, asyncpg
 
-## Install API:
+## Prerequisites:
+Your Rasa should have an active PostgreSQL tracker store,
+or, if you wish to install one, see this [guide](https://rasa.com/docs/rasa/tracker-stores/).  
+Use the same DB connection details for the next step.  
+>Currently, not tested with other SQL stores.
+
+## Installation steps:
+1. Install and run the backend API service (python).
+2. Install and run the ReactJS app.
+>All calls to tracker store database and to your Rasa server are handled by
+the backend api.
+
+## 1. Install and run backend API service
+
+### Configure:
+Copy .env_sample to .env, then edit it and configure **all** values:
+```sh
+cd api
+cp .env_sample .env
+vim .env
+```
+
+### Install API:
 ```sh
 cd api
 pyenv virtualenv 3.11.3 rasa-admin-api
@@ -24,16 +45,8 @@ pyenv local rasa-admin-api
 pip install -e .
 ```
 
-## Configure API:
-Copy .env_sample to .env and configure all it's values
-```sh
-cd api
-cp .env_sample .env
-vim .env
-```
-
-## Run API:
-if you have [just](https://just.systems/) tool installed:
+### Run API:
+If you have [just](https://just.systems/) tool installed:
 ```sh
 just run
 ```
@@ -42,16 +55,19 @@ or, if not:
 uvicorn src.main:app --reload --port 5000
 ```
 
-## Run Web-app:
+## 2. Install and run ReactJS app
 ```sh
 cd frontend
 yarn install
 yarn start
 ```
+Open your browser http://localhost:3000
 
 ### Upcoming:
 - Human handoff - ability to pause and resume bot-user conversation during handoff.
 - Auto refresh
+
+Feel free to suggest features or submit PRs!
 
 MIT License  
 Nester (c) 2023

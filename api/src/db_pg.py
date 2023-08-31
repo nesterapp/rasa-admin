@@ -3,7 +3,6 @@ from asyncpg import Pool
 from dotenv import load_dotenv
 import os
 
-
 class PostgresDB:
     def __init__(self):
         self.pool: Pool = None

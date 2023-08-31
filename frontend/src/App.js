@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ChatList from './ChatList';
 import ChatDetails from './ChatDetails';
 import MessageInput from './MessageInput';
-import RasaAdminAPI from './network'
+import RasaAdminAPI from './RasaAdminAPI'
 import './App.css';
 
 
