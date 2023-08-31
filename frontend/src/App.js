@@ -33,23 +33,16 @@ function App() {
   return (
     <div className="chat-app">
 
-      <div className="chat-list">
-        {/* Render ConversationList component */}
-        <ChatList
-        chats={chats}
-        selectedChat={selectedChat}
-        onSelectChat={handleChatClick} />
-      </div>
+      {/* Render ConversationList component */}
+      <ChatList
+      chats={chats}
+      selectedChat={selectedChat}
+      onSelectChat={handleChatClick} />
 
       <div className="middle-section">
-        <div className="chat-details">
-          {/* Render your ChatDetails component */}
-          <ChatDetails chat={selectedChatDetails} />
-        </div>
-
-        <div className="message-input">
+        {/* Render ChatDetails component */}
+        <ChatDetails chat={selectedChatDetails} />
         {selectedChatDetails && <MessageInput onSendMessage={handleSendMessage} />}
-        </div>
       </div>
 
       <div className="right-panel"></div>

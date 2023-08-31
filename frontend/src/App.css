@@ -6,8 +6,7 @@
 }
 
 .chat-list {
-  width: 20%;
-  min-width: 250px;
+  width: 17%;
   border-right: 1px solid #ccc;
   padding: 20px;
   box-sizing: border-box;
@@ -27,9 +26,10 @@
 }
 
 .chat-list li {
-  padding: 10px 0;
+  padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  border-radius: 5px;
 }
 
 .chat-list li:hover {
@@ -51,30 +51,19 @@
   display: flex;
   flex-direction: column;
   flex: 1;
-  /* padding: 20px; */
-  /* box-sizing: border-box; */
   overflow-y: auto;
 }
-
-/* .chat-details {
-  flex: 1;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  padding: 20px;
-  margin-bottom: 20px;
-  overflow-y: auto;
-} */
 
 .chat-details {
   flex: 1;
   padding: 20px;
   box-sizing: border-box;
   overflow-y: auto;
+  min-height: 0; /* allow flexbox to shrink the height */
 }
 
 .right-panel {
   width: 20%;
-  min-width: 250px;
   border-left: 1px solid #ccc;
   padding: 20px;
   box-sizing: border-box;
@@ -89,14 +78,20 @@
 
 .timestamp {
   font-size: 12px;
-  color: #999;
   margin-bottom: 0px;
+}
+
+.timestamp.bot {
+  color: #808080;
+}
+
+.timestamp.user {
+  color: #d8d8d8;
 }
 
 .message {
   display: flex;
   flex-direction: column;
-  /* margin-bottom: 10px; */
   margin: 10px 0;
   padding: 10px;
   border-radius: 20px;
@@ -105,7 +100,6 @@
 .message-body {
   font-size: 14px;
   padding: 0px;
-  border-radius: 10px;
   max-width: 100%;
 }
 
@@ -117,7 +111,6 @@
   color: #fff;
 }
 
-
 .message.bot {
   align-self: flex-start;
   background-color: #eaecf4; /* Bot bubble color */
@@ -125,29 +118,35 @@
 
 .message.user {
   align-self: flex-end;
-  background-color: #4542c4; /* User bubble color */
+  background-color: #007bff; /* User bubble color */
 }
-/* Add more styling as needed */
-
 
 /* Message Input box */
 .message-input {
   background-color: #fff;
-  border: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   padding: 20px;
   flex-shrink: 0;
-  overflow-y: auto;
+  display: flex;
+  align-items: center; /* Align items vertically centered */
 }
 
 .message-input input {
-  margin-bottom: 10px;
+  flex-grow: 1; /* Take available horizontal space */
   padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
 }
 
 .message-input button {
-  padding: 10px 20px;
+  width: 70px;
+  padding: 10px 0;
   background-color: #007bff;
   color: #fff;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
+  flex-shrink: 0;
 }
