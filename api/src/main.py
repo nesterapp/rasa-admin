@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 from src import config
 from src.db_pg import PostgresDB
-from src.domain import Chat, ChatHeader, Event, MessagePaload
+from src.domain import Chat, ChatHeader, Event, MessagePayload
 from src.utils import get_jwt_token
 
 logger = logging.getLogger('uvicorn')
@@ -66,12 +66,7 @@ async def get_chats(db: PostgresDB = Depends(get_database)):
         ORDER BY timestamp DESC;
         """
     )
-
-    chats = []
-    for row in rows:
-        chat = ChatHeader(**row)
-        chats.append(chat)
-
+    chats = [ChatHeader(**row) for row in rows]
     return chats
 
 
@@ -106,7 +101,7 @@ async def get_chat_details(sender_id: str, db: PostgresDB = Depends(get_database
 @app.post("/chats/{sender_id}/message")
 async def send_message(
     sender_id: str,
-    message: MessagePaload,
+    message: MessagePayload,
     jwt_token: str = Depends(get_jwt_token)
 ):
     """Send a text message from Rasa Bot to a user via channel

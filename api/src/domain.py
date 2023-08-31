@@ -1,8 +1,7 @@
-import re
 import json
 from typing import Optional
 
-from pydantic import BaseModel, constr, validator
+from pydantic import BaseModel, validator
 
 class EventData(BaseModel):
     event: str
@@ -37,5 +36,5 @@ class Chat(BaseModel):
     sender_id: str
     events: list[Event]
 
-class MessagePaload(BaseModel):
+class MessagePayload(BaseModel):
     text: str

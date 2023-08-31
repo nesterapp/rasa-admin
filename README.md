@@ -1,25 +1,57 @@
-# Rasa Admin Portal ( humble Rasa-X replacement )
+# Rasa Admin web-app ( humble Rasa-X replacement )
 
-A simple yet very useful Rasa backoffice portal for tracking your Rasa bot
-conversations with users.
+A simple yet very useful Rasa backoffice web-app for tracking your Rasa bot
+conversations with users.  
 Currently supports Rasa running on PostgreSQL DB.
-In fact, the only data source for this tool is the `events` table on Rasa db.
 
-Built with:
+![screenshot](https://raw.githubusercontent.com/nesterapp/rasa-admin/main/screenshot.png)
 
-Frontend: React JS
-Backend: FastAPI, Pydantic, asyncpg
+### Features:
+- Watch Bot<->users conversations on a chat like interface
+- Send a message to user ( as Bot )
 
-Install:
+### Built with:
 
+- Frontend: React JS
+- API Backend: FastAPI, Pydantic, asyncpg
 
-Run:
+## Install API:
+```sh
+cd api
+pyenv virtualenv 3.11.3 rasa-admin-api
+pyenv activate rasa-admin-api
+pyenv local rasa-admin-api
+pip install -e .
+```
 
+## Configure API:
+Copy .env_sample to .env and configure all it's values
+```sh
+cd api
+cp .env_sample .env
+vim .env
+```
 
+## Run API:
+if you have [just](https://just.systems/) tool installed:
+```sh
+just run
+```
+or, if not:
+```sh
+uvicorn src.main:app --reload --port 5000
+```
 
-Upcoming:
-Human handoff ( ability to send messages to users in-chat )
+## Run Web-app:
+```sh
+cd frontend
+yarn install
+yarn start
+```
 
+### Upcoming:
+- Human handoff - ability to pause and resume bot-user conversation during handoff.
+- Auto refresh
 
-MIT License
+MIT License  
 Nester (c) 2023
