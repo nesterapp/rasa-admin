@@ -1,0 +1,225 @@
+---
+kind: pipeline
+type: docker
+name: api
+
+trigger:
+  event:
+  - push
+  - tag
+  paths:
+    include:
+    - .drone.yml
+    - api/**
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/
+
+steps:
+  - name: build-api
+    image: plugins/gcr
+    pull: always
+    settings:
+      context: api/
+      dockerfile: api/Dockerfile
+      registry: ${IMAGE_REGISTRY}
+      repo: ${IMAGE_REPO}/nester/rasa-admin-api
+      cache_from: ${IMAGE_REGISTRY}/${IMAGE_REPO}/nester/rasa-admin-api:${DRONE_BRANCH/\//-}
+      json_key: { from_secret: gar_json_key }
+      tags:
+        - latest
+        - ${DRONE_BRANCH/\//-}
+        - ${DRONE_BUILD_NUMBER}-${DRONE_COMMIT_SHA:0:7}
+      force_tag: true
+      purge: false
+
+  # - name: deploy-api
+  #   image: quay.io/honestbee/drone-kubernetes
+  #   pull: always
+  #   settings:
+  #     namespace: default
+  #     deployment: [ api ]
+  #     repo: ${IMAGE_REGISTRY}/${IMAGE_REPO}/nester/rasa-admin-api
+  #     container: api
+  #     tag: ${DRONE_BUILD_NUMBER}-${DRONE_COMMIT_SHA:0:7}
+  #     kubernetes_server: { from_secret: kubernetes_server }
+  #     kubernetes_cert: { from_secret: kubernetes_cert }
+  #     kubernetes_token: { from_secret: kubernetes_token }
+  #   when:
+  #     event: [ push ]
+  #     branch: [ master ]
+  #     status: [ success ]
+
+---
+kind: pipeline
+type: docker
+name: frontend
+
+trigger:
+  event:
+  - push
+  - tag
+  paths:
+    include:
+    - .drone.yml
+    - frontend/**
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/
+  - name: cache
+    host:
+      path: /var/drone/cache
+
+steps:
+  - name: restore-cache
+    image: meltwater/drone-cache
+    pull: always
+    settings:
+      restore: true
+      backend: filesystem
+      mount: [ "frontend/node_modules" ]
+      cache_key: '{{ .Commit.Branch }}_{{ arch }}_{{ os }}'
+    volumes:
+      - name: cache
+        path: /tmp/cache
+
+  - name: setup
+    image: node:18.17.1
+    pull: always
+    environment: { FORCE_COLOR: "1" }
+    commands:
+      - cd frontend
+      - yarn install -q
+      - yarn build
+    resources:
+      requests: { cpu: 0.2, memory: 256MiB }
+
+  - name: rebuild-cache
+    image: meltwater/drone-cache
+    pull: always
+    settings:
+      rebuild: true
+      backend: filesystem
+      mount: [ "frontend/node_modules" ]
+      cache_key: '{{ .Commit.Branch }}_{{ arch }}_{{ os }}'
+    volumes:
+      - name: cache
+        path: /tmp/cache
+
+  - name: build-frontend
+    image: plugins/gcr
+    pull: always
+    settings:
+      context: frontend/
+      dockerfile: frontend/Dockerfile
+      registry: ${IMAGE_REGISTRY}
+      repo: ${IMAGE_REPO}/nester/rasa-admin-frontend
+      cache_from: ${IMAGE_REGISTRY}/${IMAGE_REPO}/nester/rasa-admin-frontend:${DRONE_BRANCH/\//-}
+      json_key: { from_secret: gar_json_key }
+      tags:
+        - latest
+        - ${DRONE_BRANCH/\//-}
+        - ${DRONE_BUILD_NUMBER}-${DRONE_COMMIT_SHA:0:7}
+      force_tag: true
+      purge: false
+
+  # - name: deploy-frontend
+  #   image: quay.io/honestbee/drone-kubernetes
+  #   pull: always
+  #   settings:
+  #     namespace: default
+  #     deployment: [ frontend ]
+  #     repo: ${IMAGE_REGISTRY}/${IMAGE_REPO}/nester/rasa-admin-frontend
+  #     container: frontend
+  #     tag: ${DRONE_BUILD_NUMBER}-${DRONE_COMMIT_SHA:0:7}
+  #     kubernetes_server: { from_secret: kubernetes_server }
+  #     kubernetes_cert: { from_secret: kubernetes_cert }
+  #     kubernetes_token: { from_secret: kubernetes_token }
+  #   when:
+  #     event: [ push ]
+  #     branch: [ master ]
+  #     status: [ success ]
+
+---
+kind: pipeline
+type: docker
+name: notify
+
+trigger:
+  event:
+  - push
+  - tag
+  status:
+  - success
+  - failure
+
+depends_on:
+- api
+- frontend
+
+clone:
+  disable: true
+
+steps:
+  - name: notify
+    image: appleboy/drone-telegram
+    pull: always
+    settings:
+      to: { from_secret: telegram_to }
+      token: { from_secret: telegram_token }
+      format: markdown
+      webpage_preview: false
+      message: >
+        {{#success build.status}}✓{{else}}FAILED{{/success}} [{{repo.name}}]
+        ⌥ {{commit.branch}}@[{{truncate commit.sha 8}}]({{ commit.link }})
+        {{uppercasefirst build.event}} {{uppercase build.status}}:
+        [job #{{build.number}}]({{build.link}})
+        _(by {{ commit.author }})_ {{ commit.message }}
+    when:
+      status: [ success, failure ]
+
+---
+kind: secret
+name: telegram_to
+get:
+  path: drone-secrets
+  name: TELEGRAM_TO
+
+---
+kind: secret
+name: telegram_token
+get:
+  path: drone-secrets
+  name: TELEGRAM_TOKEN
+
+---
+kind: secret
+name: gar_json_key
+get:
+  path: drone-secrets
+  name: NESTER_GAR_JSON_KEY
+
+---
+kind: secret
+name: kubernetes_server
+get:
+  path: drone-secrets
+  name: KUBERNETES_SERVER
+
+---
+kind: secret
+name: kubernetes_cert
+get:
+  path: drone-secrets
+  name: KUBERNETES_CERT
+
+---
+kind: secret
+name: kubernetes_token
+get:
+  path: drone-secrets
+  name: KUBERNETES_TOKEN
