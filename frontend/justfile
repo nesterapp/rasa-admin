@@ -1,0 +1,12 @@
+[private]
+default:
+  @just --list --unsorted
+
+dev:
+  yarn start
+
+build:
+  yarn build
+
+test:
+  yarn test

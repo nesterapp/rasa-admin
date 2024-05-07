@@ -1,0 +1,25 @@
+---
+version: "3.3"
+
+services:
+  api:
+    image: rasa-admin/api:latest
+    build:
+      context: ./api
+    ports:
+      - 5000:5000
+    networks:
+      - frontend
+      - backend
+  frontend:
+    image: rasa-admin/frontend:latest
+    build:
+      context: ./frontend
+    ports:
+      - 3000:3000
+    networks:
+      - frontend
+
+networks:
+  frontend:
+  backend:

@@ -1,15 +1,13 @@
 # Rasa Admin web-app (humble Rasa-X replacement)
 
-A simple, yet useful Rasa backoffice web-app for tracking your Rasa bot
+A simple Rasa backoffice web-app for tracking your Rasa bot
 conversations with users.. And more.
 
 ![screenshot](https://raw.githubusercontent.com/nesterapp/rasa-admin/main/screenshot.png)
 
 ### Features
-- Watch Bot<->users conversations on a chat like interface
+- Watch Bot<->users conversations
 - Send a message to user ( as Bot )
-
-### Built with
 
 ### Built with
 - Frontend: React JS
@@ -28,17 +26,7 @@ Use the same DB connection details for the next step.
 > All calls to tracker store database and to your Rasa server are handled by
 the backend api.
 
-## 1. Install and run backend API service
-
-### Configure
-Copy .env.sample to .env,  
-then edit to provide your PostgreSQL and RASA server details.
-
-```sh
-cd api
-cp .env.sample .env
-vim .env
-```
+## 1. Install and run a local backend API service
 
 ### Install API
 ```sh
@@ -47,6 +35,15 @@ pyenv virtualenv 3.11.3 rasa-admin-api
 pyenv activate rasa-admin-api
 pyenv local rasa-admin-api
 pip install -e .
+```
+
+### Configure
+Copy .env.sample to .env,  
+then edit to provide PostgreSQL and RASA server details.
+```sh
+cd api
+cp .env.sample .env
+vim .env
 ```
 
 ### Run API
@@ -62,8 +59,7 @@ Or, if not:
 uvicorn src.main:app --reload --port 5000
 ```
 
-## 2. Install and run ReactJS app
-
+## 2. Install and run local ReactJS app
 ```sh
 cd frontend
 yarn install
@@ -79,7 +75,6 @@ Open your browser http://localhost:3000
 Feel free to suggest features or submit PRs!
 
 ## License
-
 MIT License
 
 Nester (c) 2024

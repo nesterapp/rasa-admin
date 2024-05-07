@@ -6,8 +6,8 @@
  const IS_PROD = NODE_ENV === 'production';
  
  const
-     API_URL = IS_PROD ? 'https://rasa-admin.nester.co.il' : 'http://localhost:5000'
+    API_URL = IS_PROD ? 'http://host.docker.internal:5000' : 'http://localhost:5000'
  
  export {
-     API_URL
+    API_URL
  }

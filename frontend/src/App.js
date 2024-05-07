@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ChatList from './ChatList';
 import ChatDetails from './ChatDetails';
+import ChatDetailsHeader from './ChatDetailsHeader';
 import MessageInput from './MessageInput';
-import ChatHeaderBox from './ChatDetailsHeader';
 import RasaAdminAPI from './RasaAdminAPI';
 import './App.css';
-import ChatDetailsHeader from './ChatDetailsHeader';
 
 
 function App() {
