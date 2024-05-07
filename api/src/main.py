@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from src import config
 from src.db_pg import PostgresDB
 from src.domain import Chat, ChatHeader, Event, MessagePayload
-from src.utils import get_jwt_token
+from src.utils import encode_jwt_token
 
 logger = logging.getLogger('uvicorn')
 logger.setLevel(config.UVICORN_LOGGING_LEVEL)
@@ -60,7 +60,7 @@ async def get_chats(db: PostgresDB = Depends(get_database)):
     rows = await db.fetch(
         """
         SELECT sender_id,
-        MAX("timestamp") AS timestamp
+        MIN("timestamp") AS timestamp
         FROM events
         GROUP BY sender_id
         ORDER BY timestamp DESC;
@@ -101,8 +101,7 @@ async def get_chat_details(sender_id: str, db: PostgresDB = Depends(get_database
 @app.post("/chats/{sender_id}/message")
 async def send_message(
     sender_id: str,
-    message: MessagePayload,
-    jwt_token: str = Depends(get_jwt_token)
+    message: MessagePayload
 ):
     """Send a text message from Rasa Bot to a user via channel
 
@@ -114,7 +113,8 @@ async def send_message(
     """
 
     rasa_url = os.getenv("RASA_SERVER_API_URL")
-    assert rasa_url
+    jwt_secret = os.getenv("RASA_SERVER_API_JWT_SECRET_KEY")
+    assert rasa_url, jwt_secret
 
     url = f"{rasa_url}/conversations/{sender_id}/tracker/events"
 
@@ -122,19 +122,22 @@ async def send_message(
         "output_channel": "telegram", # TODO: why failing to send with "latest"
         "execute_side_effects": "true"
     }
-    
+
     payload = {
         "event": "bot",
         "text": message.text
     }
-    
+
+    if not jwt_secret:
+        raise HTTPException(status_code=400, detail="JWT secret is missing")
+    jwt_token = encode_jwt_token(jwt_secret)
     headers = {
         "Authorization": f"Bearer {jwt_token}",
         "Content-Type": "application/json"
     }
-    
+
     response = requests.post(url, params=query_params, json=payload, headers=headers)
-    
+
     if response.status_code == 200:
         return {"message": "Message sent successfully"}
     else:
