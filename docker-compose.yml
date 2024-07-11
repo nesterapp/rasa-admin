@@ -4,22 +4,28 @@ version: "3.3"
 services:
   api:
     image: rasa-admin/api:latest
+    container_name: rasa-admin-api
+    restart: unless-stopped
     build:
       context: ./api
     ports:
       - 5000:5000
     networks:
-      - frontend
-      - backend
+      - rasa-admin-frontend
+      - nester-bot_rasa-network
+
   frontend:
     image: rasa-admin/frontend:latest
+    container_name: rasa-admin-frontend
+    restart: unless-stopped
     build:
       context: ./frontend
     ports:
       - 3000:3000
     networks:
-      - frontend
+      - rasa-admin-frontend
 
 networks:
-  frontend:
-  backend:
+  rasa-admin-frontend:
+  nester-bot_rasa-network: 
+    external: true

@@ -3,7 +3,7 @@ import requests
 import os
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
@@ -34,6 +34,7 @@ origins = [
     "http://localhost:8080",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://anton:3000"
 ]
 
 app.add_middleware(
@@ -43,6 +44,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    """ manually setting allow-origin response header, due to problem with name resolving for anton """
+    response = await call_next(request)
+    if request.headers.get('origin') in origins:
+        response.headers["access-control-allow-origin"] = request.headers.get('origin')
+    return response
+
 
 def get_database() -> PostgresDB:
     return app.state.database
