@@ -71,7 +71,7 @@ async def get_chats(db: PostgresDB = Depends(get_database)):
 
 
 @app.get("/chats/{sender_id}", response_model=Chat)
-async def get_chat_details(sender_id: str, db: PostgresDB = Depends(get_database)):
+async def get_chat_details(sender_id: str, db: PostgresDB = Depends(get_database)) -> Chat:
     """Get specific chat with all of it's related events
 
     Args:
